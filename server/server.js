@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-  res.send("Welcome to the Node.js Backend Server");
+  res.send("Welcome to the Node.js Backend Server welcome");
 });
 
 app.use("/auth", authRoutes);
