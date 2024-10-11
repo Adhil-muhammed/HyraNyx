@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-import { User } from "../models/index.js";
+import { User } from "../config/models/index.js";
 
 export const register = async (req, res) => {
   const { userName, password } = req.body;
