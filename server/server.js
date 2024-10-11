@@ -3,6 +3,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./config/index.js";
 import { authRoutes } from "./routes/index.js";
+import { onCallItSelf } from "./utils/index.js";
 
 dotenv.config();
 
@@ -12,6 +13,9 @@ connectDB();
 
 app.use(express.json());
 app.use(cookieParser());
+
+// Call the function to start the cron job
+onCallItSelf();
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Node.js Backend Server welcome");
