@@ -1,1 +1,1 @@
-export { onCallItSelf } from "./helper.js";
+export { schedulePeriodicRequest } from "./helper.js";
