@@ -30,7 +30,7 @@ export const refreshAuth = (req, res, next) => {
     next();
   } catch (error) {
     return res
-      .status(403)
+      .status(401)
       .json({ message: "Invalid or expired refresh token" });
   }
 };
