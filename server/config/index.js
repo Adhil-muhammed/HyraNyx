@@ -1,3 +1,1 @@
-import { connectDB } from "./database.js";
-
-export { connectDB };
+export { connectDB } from "./database.js";

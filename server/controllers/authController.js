@@ -1,30 +1,91 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
+import { User } from "../models/index.js";
+import { sendVerificationEmail, sendWelcomeEmail } from "../mailtrap/index.js";
+import {
+  generateNumericIdV4,
+  generateTokenAndSetCookie,
+} from "../utils/index.js";
 
 dotenv.config();
 
-import { User } from "../config/models/index.js";
-
 export const register = async (req, res) => {
-  const { userName, password } = req.body;
+  const { userName, password, name, email } = req.body;
 
   try {
+    if (!userName || !password || !name || !email) {
+      throw new Error("All fields are required");
+    }
+
     const existingUser = await User.findOne({ userName });
 
     if (existingUser) {
       return res.status(400).send({ message: "User already exists" });
     }
-    //has the password
+    const verificationToken = generateNumericIdV4();
     const hasPassword = await bcrypt.hash(password, 10);
 
-    // create a new user
-    const newUser = new User({ userName, password: hasPassword });
-    await newUser.save();
+    const user = new User({
+      name,
+      email,
+      userName,
+      password: hasPassword,
+      verificationToken,
+      verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
+    });
 
-    res.status(201).send({ message: "User registered successfully" });
+    await user.save();
+
+    // await generateTokenAndSetCookie(res, user._id);
+
+    await sendVerificationEmail({ email: user?.email, verificationToken });
+
+    res.status(201).json({
+      message: "User registered successfully",
+      user: { ...user?._doc, password: undefined },
+    });
   } catch (error) {
-    return res.status(500)?.send({ message: "Server error" });
+    return res.status(500)?.send({ message: error.message });
+  }
+};
+
+export const verifyEmail = async (req, res) => {
+  const { code } = req?.body;
+
+  try {
+    const user = await User?.findOne({
+      verificationToken: code,
+      verificationTokenExpiresAt: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: "false",
+        message: "Invalid or expired verification code ",
+      });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpiresAt = undefined;
+
+    await user.save();
+
+    await sendWelcomeEmail({ name: user?.name, email: user.email });
+
+    res.status(200).json({
+      success: true,
+      message: "Email verified successfully",
+      user: {
+        ...user._doc,
+        password: undefined,
+      },
+    });
+  } catch (error) {
+    console.log("error in verifyEmail ", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 

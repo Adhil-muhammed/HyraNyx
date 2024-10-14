@@ -1,1 +1,6 @@
-export { login, register, refreshToken } from "./authController.js";
+export {
+  login,
+  register,
+  verifyEmail,
+  refreshToken,
+} from "./authController.js";
