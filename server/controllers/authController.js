@@ -118,6 +118,7 @@ export const login = async (req, res) => {
     );
 
     user.refreshToken = refreshToken;
+    user.lastLogin = new Date();
     await user.save();
 
     // Set httpOnly cookie for refresh token
@@ -130,8 +131,12 @@ export const login = async (req, res) => {
 
     // Send access token in the response body
     res.status(200).json({
-      accessToken,
-      userName: user.userName,
+      success: true,
+      message: "Logged in successfully",
+      user: {
+        ...user._doc,
+        password: undefined,
+      },
     });
   } catch (error) {
     console.error("Login error:", error);
