@@ -21,7 +21,7 @@ lib-cov/
 coverage/
 
 # Environment variable files
-.env
+# .env
 
 # Optional npm cache directory
 .npm

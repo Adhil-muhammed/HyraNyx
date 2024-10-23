@@ -25,6 +25,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
+app.use("/api/convention-center/bookings", () => {});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
