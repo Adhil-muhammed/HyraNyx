@@ -1,10 +1,14 @@
 import express from "express";
+import {
+  getAllBookings,
+  ConventionCenterBooking,
+} from "../controllers/index.js";
 
 export const router = express.Router();
 
-router.post("/");
+router.post("/", ConventionCenterBooking);
 
-router.get("/");
+router.get("/", getAllBookings);
 
 router.get("/:bookingId");
 

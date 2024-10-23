@@ -5,22 +5,22 @@ const ConventionCenterSchema = new mongoose.Schema({
   address: {
     street: { type: String, required: true },
     city: { type: String, required: true },
-    state: { type: String },
-    country: { type: String, required: true },
-    zipCode: { type: String },
+    // state: { type: String },
+    // country: { type: String, required: true },
+    // zipCode: { type: String },
   },
-  coordinates: {
-    type: { type: String, default: "Point" },
-    coordinates: { type: [Number], required: true },
-  },
-  facilities: [String],
-  pricePerDay: { type: Number, required: true },
-  availability: [
-    {
-      date: { type: Date, required: true },
-      isAvailable: { type: Boolean, default: true },
-    },
-  ],
+  // coordinates: {
+  //   type: { type: String, default: "Point" },
+  //   coordinates: { type: [Number], required: true },
+  // },
+  // facilities: [String],
+  // pricePerDay: { type: Number, required: true },
+  // availability: [
+  //   {
+  //     date: { type: Date, required: true },
+  //     isAvailable: { type: Boolean, default: true },
+  //   },
+  // ],
   bookings: [
     {
       userId: {

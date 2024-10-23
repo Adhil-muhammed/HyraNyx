@@ -5,4 +5,7 @@ export {
   refreshToken,
 } from "./authController.js";
 
-export { ConventionCenterBooking } from "./conventionCenterBookingController.js";
+export {
+  getAllBookings,
+  ConventionCenterBooking,
+} from "./conventionCenterBookingController.js";

@@ -2,9 +2,9 @@ import dotenv from "dotenv";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./config/index.js";
-import { authRoutes } from "./routes/index.js";
 import { setupSwagger } from "./swagger/index.js";
 import { schedulePeriodicRequest } from "./utils/index.js";
+import { authRoutes, eventBookingRoutes } from "./routes/index.js";
 
 dotenv.config();
 
@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
-app.use("/api/convention-center/bookings", () => {});
+app.use("/api/convention-center/bookings", eventBookingRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
