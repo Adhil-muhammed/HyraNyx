@@ -28,7 +28,7 @@ export const getAllBookings = async (req, res) => {
         },
       },
       {
-        $unwind: "$userDetails", // Deconstruct the userDetails array
+        $unwind: "$userDetails",
       },
       {
         $project: {
@@ -51,10 +51,10 @@ export const getAllBookings = async (req, res) => {
       },
       {
         $group: {
-          _id: "$_id", // Group by Convention Center ID
-          name: { $first: "$name" }, // Get the name of the convention center
-          address: { $first: "$address" }, // Get the address of the convention center
-          bookings: { $push: "$bookings" }, // Push all the booking details into an array
+          _id: "$_id",
+          name: { $first: "$name" },
+          address: { $first: "$address" },
+          bookings: { $push: "$bookings" },
         },
       },
     ]);
