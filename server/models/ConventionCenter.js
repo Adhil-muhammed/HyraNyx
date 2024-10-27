@@ -14,36 +14,22 @@ const ConventionCenterSchema = new mongoose.Schema({
     coordinates: { type: [Number], required: true },
   },
   facilities: [String],
-  pricePerDay: { type: Number, required: true },
+  pricePerHour: { type: Number, required: true },
   availability: [
     {
       date: { type: Date, required: true },
       isAvailable: { type: Boolean, default: true },
     },
   ],
-  bookings: [
-    {
-      userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "users",
-        required: true,
-      },
-      eventDate: { type: Date, required: true },
-      eventDuration: { type: Number }, // in hours or days
-      numberOfGuests: { type: Number, required: true },
-      status: {
-        type: String,
-        enum: ["pending", "confirmed", "cancelled"],
-        default: "pending",
-      },
-    },
-  ],
   images: [String],
   videos: [String],
-  // contact: {
-  //   phoneNumber: { type: String, required: true },
-  //   email: { type: String, required: true },
-  // },
+  contact: {
+    phoneNumber: { type: String, required: true },
+    email: { type: String, required: true },
+    email: { type: String, required: true },
+  },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
   // rating: { type: Number, min: 0, max: 5, default: 0 },
   // reviews: [
   //   {
@@ -57,11 +43,30 @@ const ConventionCenterSchema = new mongoose.Schema({
   //     date: { type: Date, default: Date.now },
   //   },
   // ],
-  // createdAt: { type: Date, default: Date.now },
-  // updatedAt: { type: Date, default: Date.now },
+});
+
+const eventBookingSchema = new mongoose.Schema({
+  conventionCenter: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "ConventionCenter",
+    required: true,
+  },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Assuming a User schema exists
+  startDateTime: { type: Date, required: true },
+  endDateTime: { type: Date, required: true },
+  totalPrice: { type: Number, required: true },
+  status: {
+    type: String,
+    enum: ["Pending", "Confirmed", "Cancelled"],
+    default: "Pending",
+  },
+  createdAt: { type: Date, default: Date.now },
+  notes: { type: String }, // Additional notes for the booking
 });
 
 export const ConventionCenter = mongoose.model(
-  "ConventionCenter",
+  "ConventionCenters",
   ConventionCenterSchema
 );
+
+export const EventBooking = mongoose.model("EventBooking", eventBookingSchema);

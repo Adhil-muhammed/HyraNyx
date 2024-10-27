@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
-app.use("/api/convention-center/bookings", eventBookingRoutes);
+app.use("/api/convention-center", eventBookingRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

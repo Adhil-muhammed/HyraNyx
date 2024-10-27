@@ -1,71 +1,107 @@
 import { ConventionCenter } from "../models/index.js";
+import { conventionCenterValidationSchema } from "../validators/ConventionCenter/index.js";
 
-export const ConventionCenterBooking = async (req, res) => {
+export const createConventionCenter = async (req, res) => {
+  const { error, value } = conventionCenterValidationSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
   try {
-    const bookingPlace = new ConventionCenter(req?.body);
+    const newConventionCenter = new ConventionCenter(value);
+    const conventionCenter = await newConventionCenter.save();
 
-    const savedBooking = await bookingPlace.save();
-
-    res.status(201).json({ message: "booking successfull", savedBooking });
+    res
+      .status(201)
+      .json({ message: "convention created successfully", conventionCenter });
   } catch (error) {
     console.log("error: ", error.message);
     res.status(400).json({ message: error.message });
   }
 };
 
-export const getAllBookings = async (req, res) => {
+export const getConventionCenter = async (req, res) => {
+  const { searchKey, sortKey } = req?.params;
+
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const searchQuery = req.query.search || "";
+  const sortField = req.query.sort || "name";
+  const sortOrder = req.query.order === "desc" ? -1 : 1;
+
   try {
-    const allBookings = await ConventionCenter.aggregate([
+    // const conventionCenter = await ConventionCenter.find();
+
+    const conventionCenter = await ConventionCenter.aggregate([
       {
-        $unwind: "$bookings",
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "bookings.userId",
-          foreignField: "_id",
-          as: "userDetails",
+        $match: {
+          name: { $regex: searchQuery, $options: "i" },
         },
       },
       {
-        $unwind: "$userDetails",
+        $sort: {
+          [sortField]: sortOrder,
+        },
+      },
+      {
+        $facet: {
+          conventionCenter: [
+            { $skip: (page - 1) * limit },
+            {
+              $limit: limit,
+            },
+          ],
+          totalCount: [{ $count: "count" }],
+        },
+      },
+      {
+        $unwind: {
+          path: "$totalCount",
+        },
       },
       {
         $project: {
-          id: 1,
-          name: 1,
-          address: 1,
-          bookings: {
-            id: "$bookings._id",
-            user: {
-              id: "$userDetails._id",
-              email: "$userDetails.email",
-              name: "$userDetails.name",
-            },
-            eventDate: "$bookings.eventDate",
-            eventDuration: "$bookings.eventDuration",
-            numberOfGuests: "$bookings.numberOfGuests",
-            status: "$bookings.status",
-          },
-        },
-      },
-      {
-        $group: {
-          _id: "$_id",
-          name: { $first: "$name" },
-          address: { $first: "$address" },
-          bookings: { $push: "$bookings" },
+          conventionCenter: 1,
+          totalCount: "$totalCount.count",
+          totalPages: 1,
         },
       },
     ]);
-    // const allBookings = await ConventionCenter.find().populate(
-    //   "bookings.userId",
-    //   "email name"
-    // );
 
-    res.status(200).json({ message: "success", bookings: allBookings });
+    res.status(200).json({ conventionCenter });
   } catch (error) {
-    console.log("error: ", error.message);
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getConventionCenterById = async (req, res) => {
+  const { id } = req?.params;
+
+  if (!id) {
+    return res
+      .status(400)
+      .json({ message: "Convention center ID is required" });
+  }
+
+  try {
+    const conventionCenter = await ConventionCenter.findById(id);
+
+    res.status(200).json({ message: "success", conventionCenter });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const removeAllConventionCenter = async (req, res) => {
+  try {
+    await ConventionCenter.deleteMany();
+    const remainingCount = await ConventionCenter.countDocuments();
+
+    res
+      .status(200)
+      .json({ message: "Convention center deleted", remainingCount });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

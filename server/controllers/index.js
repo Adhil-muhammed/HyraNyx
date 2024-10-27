@@ -6,6 +6,8 @@ export {
 } from "./authController.js";
 
 export {
-  getAllBookings,
-  ConventionCenterBooking,
+  getConventionCenter,
+  createConventionCenter,
+  getConventionCenterById,
+  removeAllConventionCenter,
 } from "./conventionCenterBookingController.js";

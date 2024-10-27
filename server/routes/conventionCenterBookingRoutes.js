@@ -1,17 +1,21 @@
 import express from "express";
 import {
-  getAllBookings,
-  ConventionCenterBooking,
+  getConventionCenter,
+  createConventionCenter,
+  getConventionCenterById,
+  removeAllConventionCenter,
 } from "../controllers/index.js";
 
 export const router = express.Router();
 
-router.post("/", ConventionCenterBooking);
+router.post("/", createConventionCenter);
 
-router.get("/", getAllBookings);
+router.get("/", getConventionCenter);
 
-router.get("/:bookingId");
+router.get("/:id", getConventionCenterById);
 
 router.put("/:bookingId");
 
 router.delete("/:bookingId");
+
+router.delete("/removeAll", removeAllConventionCenter);
