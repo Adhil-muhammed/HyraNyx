@@ -7,6 +7,7 @@ export {
 
 export {
   getConventionCenter,
+  deleteConventionCenter,
   createConventionCenter,
   getConventionCenterById,
   removeAllConventionCenter,

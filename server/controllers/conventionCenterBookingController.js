@@ -93,22 +93,6 @@ export const getConventionCenter = async (req, res) => {
   }
 };
 
-// Additional optimization: Batch operations helper
-// const batchProcessConventionCenters = async (operations, batchSize = 1000) => {
-//   const batches = [];
-//   for (let i = 0; i < operations.length; i += batchSize) {
-//     batches.push(operations.slice(i, i + batchSize));
-//   }
-
-//   const results = [];
-//   for (const batch of batches) {
-//     const result = await Promise.all(batch.map((op) => op()));
-//     results.push(...result);
-//   }
-
-//   return results;
-// };
-
 export const getConventionCenterById = async (req, res) => {
   const { id } = req?.params;
 
@@ -122,6 +106,31 @@ export const getConventionCenterById = async (req, res) => {
     const conventionCenter = await ConventionCenter.findById(id);
 
     res.status(200).json({ message: "success", conventionCenter });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const deleteConventionCenter = async (req, res) => {
+  const { id } = req?.params;
+  try {
+    if (!id) {
+      console.log("id: ", id);
+      return res.status(400).json({ message: "ID parameter is required" });
+    }
+
+    const result = await ConventionCenter.deleteOne({ _id: id });
+    const remainingCount = await ConventionCenter.countDocuments();
+
+    if (result?.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ message: "Convention center not found or already deleted" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Convention center deleted", remainingCount });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
