@@ -30,6 +30,10 @@ const ConventionCenterSchema = new mongoose.Schema({
   },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  bookingStatus: {
+    type: Boolean,
+    default: false,
+  },
   // rating: { type: Number, min: 0, max: 5, default: 0 },
   // reviews: [
   //   {
@@ -51,7 +55,7 @@ const eventBookingSchema = new mongoose.Schema({
     ref: "ConventionCenter",
     required: true,
   },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Assuming a User schema exists
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
   startDateTime: { type: Date, required: true },
   endDateTime: { type: Date, required: true },
   totalPrice: { type: Number, required: true },
@@ -61,7 +65,14 @@ const eventBookingSchema = new mongoose.Schema({
     default: "Pending",
   },
   createdAt: { type: Date, default: Date.now },
-  notes: { type: String }, // Additional notes for the booking
+  notes: { type: String },
+});
+
+const activityLogSchema = new mongoose.Schema({
+  activityType: { type: String, required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
+  timestamp: { type: Date, default: Date.now },
+  activityStatus: { type: Boolean, required: true },
 });
 
 export const ConventionCenter = mongoose.model(
@@ -70,3 +81,5 @@ export const ConventionCenter = mongoose.model(
 );
 
 export const EventBooking = mongoose.model("EventBooking", eventBookingSchema);
+
+export const ActivityLog = mongoose.model("ActivityLog", activityLogSchema);

@@ -1,2 +1,6 @@
 export { User } from "./User.js";
-export { ConventionCenter } from "./ConventionCenter.js";
+export {
+  ActivityLog,
+  EventBooking,
+  ConventionCenter,
+} from "./ConventionCenter.js";
