@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  conventionBooking,
   getConventionCenter,
   deleteConventionCenter,
   createConventionCenter,
@@ -15,8 +16,8 @@ router.get("/", getConventionCenter);
 
 router.get("/:id", getConventionCenterById);
 
-router.put("/:bookingId");
-
 router.delete("/:id", deleteConventionCenter);
 
 router.delete("/removeAll", removeAllConventionCenter);
+
+router.post("/booking/:id", conventionBooking);

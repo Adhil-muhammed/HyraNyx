@@ -52,7 +52,7 @@ const ConventionCenterSchema = new mongoose.Schema({
 const eventBookingSchema = new mongoose.Schema({
   conventionCenter: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "ConventionCenter",
+    ref: "ConventionCenters",
     required: true,
   },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },

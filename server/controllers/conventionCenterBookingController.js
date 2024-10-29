@@ -1,4 +1,5 @@
-import { ConventionCenter } from "../models/index.js";
+import mongoose from "mongoose";
+import { ConventionCenter, EventBooking } from "../models/index.js";
 import { conventionCenterValidationSchema } from "../validators/ConventionCenter/index.js";
 
 export const createConventionCenter = async (req, res) => {
@@ -23,7 +24,7 @@ export const createConventionCenter = async (req, res) => {
 
 export const getConventionCenter = async (req, res) => {
   try {
-    const page = Math.max(1, parseInt(req?.query?.page) || 1);
+    let page = Math.max(1, parseInt(req?.query?.page) || 1);
     const limit = Math.min(100, Math.max(1, parseInt(req?.query?.limit) || 10));
     const searchQuery = req?.query?.search?.trim() || "";
 
@@ -42,33 +43,37 @@ export const getConventionCenter = async (req, res) => {
     //   return res.status(200).json(JSON.parse(cachedResults));
     // }
 
-    const totalCount = await ConventionCenter.countDocuments({
-      name: { $regex: searchQuery, $options: "i" },
-    }).lean();
+    await ConventionCenter.createIndexes({
+      date: 1,
+      capacity: 1,
+      name: "text",
+    });
 
-    // Skip aggregation if no search is needed
-    let query = ConventionCenter.find();
+    const filter = searchQuery
+      ? {
+          name: { $regex: searchQuery, $options: "i" },
+        }
+      : {};
 
-    if (searchQuery) {
-      query = query.where("name", new RegExp(searchQuery, "i"));
+    const totalCount = await ConventionCenter.countDocuments(filter);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    if (searchQuery && page > totalPages) {
+      page = 1;
     }
 
-    // Add sorting
-    query = query.sort({ [sortField]: sortOrder });
-
-    // Add pagination
-    // Convert mongoose docs to plain objects
-    query = query
+    const conventionCenter = await ConventionCenter.find(filter)
+      // .select("name date capacity")
+      .sort({ [sortField]: sortOrder })
       .skip((page - 1) * limit)
       .limit(limit)
       .lean();
 
-    const conventionCenter = await query.exec();
-
     const result = {
       data: {
-        conventionCenter,
         totalCount,
+        conventionCenter,
         currentPage: page,
         totalPages: Math.ceil(totalCount / limit),
         hasMore: page * limit < totalCount,
@@ -79,9 +84,6 @@ export const getConventionCenter = async (req, res) => {
         page,
       },
     };
-
-    // Cache the results
-    // await cache.set(cacheKey, JSON.stringify(result), 'EX', 300); // Cache for 5 minutes
 
     res.status(200).json(result);
   } catch (error) {
@@ -146,5 +148,44 @@ export const removeAllConventionCenter = async (req, res) => {
       .json({ message: "Convention center deleted", remainingCount });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+export const conventionBooking = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { id } = req.params;
+
+    const eventBooking = new EventBooking(req.body);
+    const conventionCenter = await ConventionCenter.findById({
+      _id: id,
+    }).session(session);
+
+    if (!conventionCenter) {
+      console.log("Convention center not found");
+      return res.status(400).json({ message: "Convention center not found" });
+    }
+
+    await eventBooking.save({ session });
+    console.log("EventBooking saved");
+
+    // Simulate an error after saving eventBooking
+    // throw new Error("Simulated error for testing rollback");
+
+    conventionCenter.bookingStatus = true;
+
+    await conventionCenter.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(201).send({ message: "Booking successful" });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+
+    res.status(500).send({ message: "Booking failed", error: error.message });
   }
 };

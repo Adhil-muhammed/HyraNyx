@@ -6,6 +6,7 @@ export {
 } from "./authController.js";
 
 export {
+  conventionBooking,
   getConventionCenter,
   deleteConventionCenter,
   createConventionCenter,
