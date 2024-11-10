@@ -1,7 +1,8 @@
 {
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "start::cluster": "cross-env CLUSTERING=true nodemon server.js"
   },
   "dependencies": {
     "axios": "^1.7.7",
@@ -24,6 +25,7 @@
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.7",
     "@types/uuid": "^10.0.0",
+    "cross-env": "^7.0.3",
     "nodemon": "^3.1.7"
   }
 }

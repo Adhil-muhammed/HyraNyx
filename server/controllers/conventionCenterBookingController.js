@@ -90,7 +90,7 @@ export const getConventionCenter = async (req, res) => {
     console.error("Convention Center Error:", error);
     res.status(500).json({
       message: "An error occurred while fetching convention centers",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+      error: error.message,
     });
   }
 };
@@ -164,13 +164,10 @@ export const conventionBooking = async (req, res) => {
     }).session(session);
 
     if (!conventionCenter) {
-      console.log("Convention center not found");
       return res.status(400).json({ message: "Convention center not found" });
     }
 
     await eventBooking.save({ session });
-    console.log("EventBooking saved");
-
     // Simulate an error after saving eventBooking
     // throw new Error("Simulated error for testing rollback");
 

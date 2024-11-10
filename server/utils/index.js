@@ -1,3 +1,4 @@
+export { ClusterManager } from "./clusterManager.js";
 export {
   generateNumericIdV4,
   schedulePeriodicRequest,
