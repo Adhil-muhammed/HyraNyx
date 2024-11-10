@@ -13,7 +13,6 @@ export const router = express.Router();
 router?.post("/register", register);
 
 // veryfy the user email
-
 router.post("/verify-email", verifyEmail);
 
 // Route for user login
