@@ -68,7 +68,6 @@ export class ClusterManager {
     // send shutdown signal to all workers
     for (const id in cluster.workers) {
       cluster.workers[id].kill("SIGTERM");
-      console.log("cluster.workers[id]: ", cluster.workers[id]);
     }
 
     // force full shutdown after time out
