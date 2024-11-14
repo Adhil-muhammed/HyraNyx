@@ -40,7 +40,7 @@ export const register = async (req, res) => {
 
     // await generateTokenAndSetCookie(res, user._id);
 
-    await sendVerificationEmail({ email: user?.email, verificationToken });
+    // await sendVerificationEmail({ email: user?.email, verificationToken });
 
     res.status(201).json({
       message: "User registered successfully",

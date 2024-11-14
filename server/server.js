@@ -11,13 +11,10 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
-const initializeServices = async () => {
+const initializeServices = async (app) => {
   try {
-    if (process.env.NODE_APP_INSTANCE === "0") {
-      setupSwagger(app);
-      schedulePeriodicRequest();
-    }
-    return true;
+    setupSwagger(app);
+    schedulePeriodicRequest();
   } catch (error) {
     console.error("Failed to initialize services:", error);
     return false;
@@ -53,12 +50,7 @@ const workerFunction = async () => {
     res.status(500).send("Something broke!");
   });
 
-  const servicesInitialized = await initializeServices(app);
-
-  if (!servicesInitialized) {
-    console.error(`Worker ${process.pid} failed to initialize services`);
-    process.exit(1);
-  }
+  await initializeServices(app);
 
   // Listen for shutdown signals in each worker
 

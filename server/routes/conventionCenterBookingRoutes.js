@@ -7,6 +7,7 @@ import {
   getConventionCenterById,
   removeAllConventionCenter,
   bulkUploadConventionCenters,
+  bulkUploadconventionBooking,
 } from "../controllers/index.js";
 
 export const router = express.Router();
@@ -24,3 +25,5 @@ router.delete("/:id", deleteConventionCenter);
 router.delete("/delete/all", removeAllConventionCenter);
 
 router.post("/booking/:id", conventionBooking);
+
+router.post("/booking/bulk-upload", bulkUploadconventionBooking);

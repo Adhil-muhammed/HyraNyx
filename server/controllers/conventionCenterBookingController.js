@@ -218,3 +218,31 @@ export const conventionBooking = async (req, res) => {
     res.status(500).send({ message: "Booking failed", error: error.message });
   }
 };
+
+export const bulkUploadconventionBooking = async (req, res) => {
+  const bulkConventionBooking = req.body;
+
+  if (
+    !Array.isArray(bulkConventionBooking) ||
+    bulkConventionBooking.length === 0
+  ) {
+    return res.status(400).json({
+      message: "Input must be a non-empty array of convention bookings.",
+    });
+  }
+
+  try {
+    const insertConventionBooking = await EventBooking.insertMany(
+      bulkConventionBooking
+    );
+
+    res.status(201).json({
+      message: "Booking uploaded successfully.",
+      data: insertConventionBooking,
+    });
+  } catch (error) {
+    console.log("req: ", req);
+
+    res.status(500).json({ message: "uploading failed", error: error.message });
+  }
+};

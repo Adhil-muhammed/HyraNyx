@@ -13,4 +13,5 @@ export {
   getConventionCenterById,
   removeAllConventionCenter,
   bulkUploadConventionCenters,
+  bulkUploadconventionBooking,
 } from "./conventionCenterBookingController.js";
