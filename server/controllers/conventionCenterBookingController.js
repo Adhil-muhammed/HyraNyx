@@ -22,10 +22,39 @@ export const createConventionCenter = async (req, res) => {
   }
 };
 
+export const bulkUploadConventionCenters = async (req, res) => {
+  const conventionCenters = req.body;
+
+  if (!Array.isArray(conventionCenters) || conventionCenters.length === 0) {
+    return res.status(400).json({
+      message: "Input must be a non-empty array of convention centers.",
+    });
+  }
+
+  try {
+    const insertedConventionCenters = await ConventionCenter.insertMany(
+      conventionCenters
+    );
+
+    res.status(201).json({
+      message: "Convention centers uploaded successfully.",
+      data: insertedConventionCenters,
+    });
+  } catch (error) {
+    console.error("Error in bulk upload:", error.message);
+    res.status(500).json({
+      message: "Error uploading convention centers.",
+      error: error.message,
+    });
+  }
+};
+
 export const getConventionCenter = async (req, res) => {
   try {
     let page = Math.max(1, parseInt(req?.query?.page) || 1);
+
     const limit = Math.min(100, Math.max(1, parseInt(req?.query?.limit) || 10));
+
     const searchQuery = req?.query?.search?.trim() || "";
 
     const sortField = ["name", "date", "capacity"].includes(req?.query?.sort)
@@ -97,6 +126,7 @@ export const getConventionCenter = async (req, res) => {
 
 export const getConventionCenterById = async (req, res) => {
   const { id } = req?.params;
+  console.log("id: ", id);
 
   if (!id) {
     return res
@@ -147,6 +177,8 @@ export const removeAllConventionCenter = async (req, res) => {
       .status(200)
       .json({ message: "Convention center deleted", remainingCount });
   } catch (error) {
+    console.log(" error.message: ", error.message);
+
     res.status(500).json({ message: error.message });
   }
 };

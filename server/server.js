@@ -63,7 +63,7 @@ const workerFunction = async () => {
   // Listen for shutdown signals in each worker
 
   app.listen(PORT, () => {
-    // console.log(`Worker ${process.pid} is running on port ${PORT}`);
+    console.log(`Worker ${process.pid} is running on port ${PORT}`);
   });
 };
 
