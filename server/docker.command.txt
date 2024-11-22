@@ -24,6 +24,10 @@ list all containers including stopped containers-->docker ps -a
 
 Stop and Remove the Running Container-->docker stop <container_id>,docker rm <container_id>
 
+................Docker.........................
+sudo systemctl restart docker
+
+
 
 
 
