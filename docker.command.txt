@@ -1,0 +1,33 @@
+....................##docker image........................................
+
+docker image createion -->docker build -t my-app:1.0 .
+
+veryfi the image -->docker images
+
+Check specific Docker image-->docker inspect <image_name_or_id>
+
+run the docker container -->docker run -p 5000:5000 my-app("your image name")
+
+................................##Optional: Tag and Push the Image to Docker Hub##......................................
+
+log in to docker-->docker login
+
+tag the image-->docker tag my-app your-dockerhub-username/my-app
+
+push the image to docker-->docker push your-dockerhub-username/my-app
+
+.....................##docker container...............................................
+
+list the docker containers-->docker ps
+
+list all containers including stopped containers-->docker ps -a
+
+Stop and Remove the Running Container-->docker stop <container_id>,docker rm <container_id>
+
+
+
+
+
+
+
+
