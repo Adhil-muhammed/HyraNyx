@@ -4,28 +4,40 @@ docker image createion -->docker build -t my-app:1.0 .
 
 veryfi the image -->docker images
 
-Check specific Docker image-->docker inspect <image_name_or_id>
+Check specific Docker image -->docker inspect <image_name_or_id>
 
-run the docker container -->docker run -p 5000:5000 my-app("your image name")
+delete the docker image -->docker rmi abc123def456
 
-................................##Optional: Tag and Push the Image to Docker Hub##......................................
-
-log in to docker-->docker login
-
-tag the image-->docker tag my-app your-dockerhub-username/my-app
-
-push the image to docker-->docker push your-dockerhub-username/my-app
 
 .....................##docker container...............................................
 
-list the docker containers-->docker ps
+run the docker container -->docker run -d -p 8080:80 --name hyra-nyx-container 7994034168/hyra-nyx:1.0
 
-list all containers including stopped containers-->docker ps -a
+list the docker containers -->docker ps
 
-Stop and Remove the Running Container-->docker stop <container_id>,docker rm <container_id>
+list all containers including stopped containers -->docker ps -a
 
-................Docker.........................
-sudo systemctl restart docker
+Stop and Remove the Running Container -->docker stop <container_id>,docker rm <container_id>
+
+get the docker container log --> docker logs hyra-nyx-container
+
+
+................................##Optional: Tag and Push the Image to Docker Hub##......................................
+
+Log in to Docker Hub -->docker login
+
+Tag the Docker Image -->docker tag hyra-nyx:1.0 yourusername/hyra-nyx:1.0
+
+Push the Docker Image -->docker push yourusername/hyra-nyx:1.0
+
+pull the Docker Image -->docker pull <image-name>:<tag>
+
+
+
+
+
+
+
 
 
 
