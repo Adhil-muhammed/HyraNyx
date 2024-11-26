@@ -21,6 +21,8 @@ Stop and Remove the Running Container -->docker stop <container_id>,docker rm <c
 
 get the docker container log --> docker logs hyra-nyx-container
 
+navigate to the docker container --> docker exec -it acemoney_auth bash
+
 
 ................................##Optional: Tag and Push the Image to Docker Hub##......................................
 
